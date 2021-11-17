@@ -39,18 +39,15 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "Error : %s\n", strerror(errno));
 	}
 
-		
 	while(1) {
 		printf("Temp : %5.2f\n", getTemperature(fd));
 		printf("Humid : %5.2f\n", getHumidity(fd));
 		
 		delay(2000);
-	}	
-	
+	}
 	
 	return 0;
 }
-
 
 double getTemperature(int fd)
 {
