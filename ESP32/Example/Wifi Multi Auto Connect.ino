@@ -5,7 +5,7 @@ WiFiMulti wifiMulti;
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(9600);
     delay(10);
 /*   자동으로 연결할 Wifi 순위 설정    */
     wifiMulti.addAP("ssid_from_AP_1", "your_password_for_AP_1");
