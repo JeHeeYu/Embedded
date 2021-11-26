@@ -1,7 +1,7 @@
 #include "WiFi.h"
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   //Init WiFi as Station, start SmartConfig
   WiFi.mode(WIFI_AP_STA);
