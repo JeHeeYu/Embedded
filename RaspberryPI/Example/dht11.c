@@ -35,25 +35,31 @@ void ReadDHT11()
 		{
 			counter ++;
 			delayMicroseconds(1);
+			
 			if(counter == 255)
 			{
 				break;
 			}
 		}
-		laststate = digitalRead(DHTPIN);
 		
+		laststate = digitalRead(DHTPIN);
+
 		if(counter == 255)
 		{
 			break;
 		}
 		
-		if ( (i >= 4) && (i % 2 == 0) )
-        {
-            dht11Data[j / 8] <<= 1;
-            if ( counter > 16 )
-                dht11Data[j / 8] |= 1;
-            j++;
-        }
+		if ((i >= 4) && (i % 2 == 0))
+		{
+			dht11Data[j / 8] <<= 1;
+			
+			if (counter > 16)
+			{
+				dht11Data[j / 8] |= 1;
+			}
+			
+			j++;
+		}
 	}
 	
 	if ((j >= 40) && (dht11Data[4] == ( (dht11Data[0] + dht11Data[1] + dht11Data[2] + dht11Data[3]) & 0xFF)))
