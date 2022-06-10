@@ -1,45 +1,82 @@
-#include <FS.h>
-#include <SPIFFS.h>
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include "WiFi.h"
+#include "ESPAsyncWebServer.h"
+#include "SPIFFS.h"
 
-AsyncWebServer server(80);
-
+// Replace with your network credentials
 const char* ssid = "AndroidHotspot3373";
 const char* password = "11122233344455";
 
-void notFound(AsyncWebServerRequest *request) {
-    request->send(404, "text/plain", "Not found");
-}
+// Set LED GPIO
+const int ledPin = 2;
+// Stores LED state
+String ledState;
 
-void setup() {
+// Create AsyncWebServer object on port 80
+AsyncWebServer server(80);
 
-    Serial.begin(115200);
-    SPIFFS.begin(true);
-    
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
-    if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-        Serial.printf("WiFi Failed!\n");
-        return;
+// Replaces placeholder with LED state value
+String processor(const String& var){
+  Serial.println(var);
+  if(var == "STATE"){
+    if(digitalRead(ledPin)){
+      ledState = "ON";
     }
+    else{
+      ledState = "OFF";
+    }
+    Serial.print(ledState);
+    return ledState;
+  }
+  return String();
+}
+ 
+void setup(){
+  // Serial port for debugging purposes
+  Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);
 
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.localIP());
+  // Initialize SPIFFS
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
 
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(SPIFFS, "/index.html");
-    });
+  // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  }
 
-    server.on("/image/bg.jpg", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(SPIFFS, "/image/bg.jpg");
-    });
+  // Print ESP32 Local IP Address
+  Serial.println(WiFi.localIP());
 
-    server.on("/image/member.jpg", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(SPIFFS, "/image/member.jpg");
-    });
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+  
+  // Route to load style.css file
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/style.css", "text/css");
+  });
 
-    server.onNotFound(notFound);
-    server.begin();
+  // Route to set GPIO to HIGH
+  server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+    digitalWrite(ledPin, HIGH);    
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+  
+  // Route to set GPIO to LOW
+  server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
+    digitalWrite(ledPin, LOW);    
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  // Start server
+  server.begin();
+}
+ 
+void loop(){
+  
 }
