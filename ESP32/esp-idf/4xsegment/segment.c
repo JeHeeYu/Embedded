@@ -75,10 +75,10 @@ void SegmentShow(int number, int digit)
 
   for(i = 0; i < 8; i++) {
     if(segmentNumber[number][i] == 1) {
-      printf("1 : %d\n", segmentNumber[number][i]);
+      gpio_set_level(segmentPin[i], HIGH);
     }
     else {
-      printf("0 : %d\n", segmentNumber[number][i]);
+      gpio_set_level(segmentPin[i], LOW);
     }
   }
 }
