@@ -19,16 +19,6 @@ wifi_config_t stationModeConfig = {
     },
 };
 
-wifi_config_t apModeConfig = {
-    .ap = {
-      .ssid = SSID_AP_MODE,
-      .ssid_len = strlen(SSID_AP_MODE),
-      .password = PASSWORD_AP_MOE,
-      .channel = CHANNEL_AP_MODE,
-      .authmode = WIFI_AUTH_WPA_WPA2_PSK,
-    },
-};
-
 static EventGroupHandle_t wifiEventGroupHandler;
 static int wifiRetryCount = 0;
 
@@ -109,18 +99,4 @@ void WiFiCheckBits()
   else {
     printf("WiFI is Null\n");
   }
-}
-
-void WiFiAPMode()
-{
-  NVSInit();
-  esp_netif_init();
-  esp_event_loop_create_default();
-  esp_netif_create_default_wifi_ap();
-
-  wifi_init_config_t config = WIFI_INIT_CONFIG_DEFAULT();
-  esp_wifi_init(&config);
-  esp_wifi_set_mode(WIFI_MODE_AP);
-  esp_wifi_set_config(WIFI_IF_AP, &apModeConfig);
-  esp_wifi_start();
 }
