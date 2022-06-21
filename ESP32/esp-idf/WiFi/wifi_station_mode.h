@@ -1,9 +1,5 @@
 #include "esp_event.h"
 
-#define SSID_AP_MODE             "JeheeTest"
-#define PASSWORD_AP_MOE          "1234"
-#define CHANNEL_AP_MODE          1
-
 #define SSID_STATION_MODE         "AndroidHotspot3373"
 #define PASSWORD_STATION_MODE     "11122233344455" 
 #define CHANNEL_STATION_MODE      1
@@ -14,7 +10,6 @@
 
 void WiFiInit();
 void WiFiStationMode();
-void WiFiAPMode();
 void NVSInit();
 void WiFiCheckBits();
 
